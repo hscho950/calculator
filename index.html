@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Calc</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        @media (max-width: 540px) {
+            div.toosmall   { display: none; }
+            div.vertical   { display: block; }
+            div.horizontal { display: none; }
+        }
+        @media (max-width: 360px) {
+            div.toosmall   { display: block; }
+            div.vertical   { display: none; }
+            div.horizontal { display: none; }
+        }
+        @media (min-width: 541px) {
+            div.toosmall   { display: none; }
+            div.vertical   { display: none; }
+            div.horizontal { display: block; }
+        }
+
+        .calc {
+            background: #fff;
+            border-radius: 16px;
+            padding: 16px;
+            display: inline-block;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .display {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            text-align: right;
+            padding: 8px 14px;
+            font-size: 28px;
+            margin-bottom: 10px;
+            min-height: 52px;
+            color: #222;
+        }
+
+        .vertical .display {
+            width: calc(72px * 4 + 6px * 3);
+        }
+
+        .horizontal .display {
+            width: calc(66px * 7 + 6px * 6);
+        }
+
+        .grid {
+            display: grid;
+            gap: 6px;
+        }
+
+        button {
+            height: 64px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            background: #eee;
+            border-radius: 10px;
+            cursor: default;
+            padding: 0;
+            color: #222;
+        }
+
+        button.empty {
+            background: #ddd;
+            color: #555;
+            font-weight: normal;
+            font-size: 15px;
+        }
+
+        button.op {
+            background: #fc0;
+            color: #fff;
+            border: none;
+        }
+
+        .vertical .grid {
+            grid-template-columns: repeat(4, 72px);
+        }
+
+        .horizontal .grid {
+            grid-template-columns: repeat(7, 66px);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #888;
+        }
+
+        .feature-footer {
+            margin-top: 10px;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            padding: 12px 14px;
+            background: #fafafa;
+        }
+
+        .vertical .feature-footer {
+            width: calc(72px * 4 + 6px * 3 + 32px);
+        }
+
+        .horizontal .feature-footer {
+            width: calc(66px * 7 + 6px * 6 + 32px);
+        }
+
+        .feature-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px 16px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 6px;
+            font-size: 11.5px;
+            color: #555;
+            text-align: left;
+        }
+
+        .feature-item .feat-key {
+            background: #ddd;
+            color: #444;
+            font-weight: bold;
+            font-size: 11px;
+            border-radius: 5px;
+            padding: 1px 6px;
+        }
+
+        .feature-item .feat-desc {
+            line-height: 1.5;
+            color: #666;
+        }
+    </style>
+</head>
+<body style="font-size: 14px;">
+<div class="toosmall">표시할 수 없음.</div>
+
+<!-- ==================세로형============================ -->
+<div class="vertical">
+    <div class="calc">
+        <div class="display" id="display2">0</div>
+        <div class="grid">
+            <button class="empty" id="btn-bs">←</button>
+            <button class="empty" id="btn-sq">x²</button>
+            <button class="empty" id="btn-rc">1/x</button>
+            <button class="empty" id="btn-log">log</button>
+
+            <button id="accebtn" onclick="ACCEbutton()">AC</button>
+            <button onclick="sqrtButton()">√x</button>
+            <button onclick="perButton()">%</button>
+            <button class="op" onclick="divideButton()">÷</button>
+
+            <button onclick="numberButton(7);">7</button>
+            <button onclick="numberButton(8);">8</button>
+            <button onclick="numberButton(9);">9</button>
+            <button class="op" onclick="multiButton()">×</button>
+
+            <button onclick="numberButton(4);">4</button>
+            <button onclick="numberButton(5);">5</button>
+            <button onclick="numberButton(6);">6</button>
+            <button class="op" onclick="minusButton()">−</button>
+
+            <button onclick="numberButton(1);">1</button>
+            <button onclick="numberButton(2);">2</button>
+            <button onclick="numberButton(3);">3</button>
+            <button class="op" onclick="plusButton()">+</button>
+
+            <button onclick="numberButton(0);">0</button>
+            <button onclick="dotButton()">.</button>
+            <button onclick="plmaButton()">+/-</button>
+            <button class="op" onclick="equalButton()">=</button>
+
+            <button class="empty" onclick="PiButton()">π</button>
+            <button class="empty" onclick="powButton()">xʸ</button>
+            <button class="empty" onclick="r2Button()">R2</button>
+            <button class="empty" onclick="r0Button()">R0</button>
+        </div>
+
+        <div class="footer">
+            powered by © Calculator<b style="color: red;">Soup</b> ®<br>
+            <div style="text-align: right;">20233046 조호성</div>
+        </div>
+    </div>
+    <div class="feature-footer">
+        <div class="feature-list">
+            <div class="feature-item">
+                <span class="feat-key">←</span>
+                <span class="feat-desc">숫자를 잘못 입력했을 때 AC/CE로 전체를 지우지 않고 마지막 한 자리만 삭제합니다. 값이 한 자리이거나 음수 한 자리면 0으로 초기화됩니다.</span>
+            </div>
+            <div class="feature-item">
+                <span class="feat-key">x²</span>
+                <span class="feat-desc">현재 디스플레이의 숫자를 자기 자신과 곱한 값(제곱)으로 바꿉니다. 음수도 적용 가능합니다. (예: -3 → 9)</span>
+            </div>
+            <div class="feature-item">
+                <span class="feat-key">1/x</span>
+                <span class="feat-desc">현재 숫자를 분모로 하여 1을 나눈 역수를 구합니다. 0을 입력하면 Error가 표시됩니다. (예: 4 → 0.25, 0.5 → 2)</span>
+            </div>
+            <div class="feature-item">
+                <span class="feat-key">log</span>
+                <span class="feat-desc">밑이 10인 상용로그를 계산합니다. 0 이하의 수는 수학적으로 정의되지 않으므로 Error가 표시됩니다. (예: 100 → 2, 1000 → 3, 1 → 0)</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ====================가로형======================== -->
+<div class="horizontal">
+    <div class="calc">
+        <div class="display" id="display3">0</div>
+        <div class="grid">
+            <button class="empty" id="btn-bs2">←</button>
+            <button class="empty" id="btn-sq2">x²</button>
+            <button onclick="numberButton(7)">7</button>
+            <button onclick="numberButton(8)">8</button>
+            <button onclick="numberButton(9)">9</button>
+            <button class="op" onclick="divideButton()">÷</button>
+            <button class="empty" onclick="r2Button()">R2</button>
+
+            <button class="empty" id="btn-rc2">1/x</button>
+            <button class="empty" id="btn-log2">log</button>
+            <button onclick="numberButton(4)">4</button>
+            <button onclick="numberButton(5)">5</button>
+            <button onclick="numberButton(6)">6</button>
+            <button class="op" onclick="multiButton()">×</button>
+            <button class="empty" onclick="r0Button()">R0</button>
+
+            <button class="empty" onclick="PiButton()">π</button>
+            <button class="empty" onclick="powButton()">xʸ</button>
+            <button onclick="numberButton(1)">1</button>
+            <button onclick="numberButton(2)">2</button>
+            <button onclick="numberButton(3)">3</button>
+            <button class="op" onclick="minusButton()">−</button>
+            <button id="accebtn2" onclick="ACCEbutton()">AC</button>
+
+            <button onclick="sqrtButton()">√x</button>
+            <button onclick="perButton()">%</button>
+            <button onclick="numberButton(0)">0</button>
+            <button onclick="dotButton()">.</button>
+            <button onclick="plmaButton()">+/-</button>
+            <button class="op" onclick="plusButton()">+</button>
+            <button class="op" onclick="equalButton()">=</button>
+        </div>
+
+        <div class="footer">
+            powered by © Calculator<b style="color: red;">Soup</b> ®<br>
+            <div style="text-align: right;">20233046 조호성</div>
+        </div>
+    </div>
+    <div class="feature-footer">
+        <div class="feature-list">
+            <div class="feature-item">
+                <span class="feat-key">←</span>
+                <span class="feat-desc">숫자를 잘못 입력했을 때 AC/CE로 전체를 지우지 않고 마지막 한 자리만 삭제합니다. 값이 한 자리이거나 음수 한 자리면 0으로 초기화됩니다.</span>
+            </div>
+            <div class="feature-item">
+                <span class="feat-key">x²</span>
+                <span class="feat-desc">현재 디스플레이의 숫자를 자기 자신과 곱한 값(제곱)으로 바꿉니다. 음수도 적용 가능합니다. (예: -3 → 9)</span>
+            </div>
+            <div class="feature-item">
+                <span class="feat-key">1/x</span>
+                <span class="feat-desc">현재 숫자를 분모로 하여 1을 나눈 역수를 구합니다. 0을 입력하면 Error가 표시됩니다. (예: 4 → 0.25, 0.5 → 2)</span>
+            </div>
+            <div class="feature-item">
+                <span class="feat-key">log</span>
+                <span class="feat-desc">밑이 10인 상용로그를 계산합니다. 0 이하의 수는 수학적으로 정의되지 않으므로 Error가 표시됩니다. (예: 100 → 2, 1000 → 3, 1 → 0)</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let displayValue = '0';
+    let curValue = 0;
+    let operator = '';
+
+    function getVal(){
+        return displayValue;
+    }
+    function setVal(v){
+        displayValue = String(v);
+        const d2 = document.getElementById('display2');
+        const d3 = document.getElementById('display3');
+        if(d2) d2.innerHTML = displayValue;
+        if(d3) d3.innerHTML = displayValue;
+    }
+
+    function numberButton(num){
+        if(getVal() == '0'){
+            setVal(num);
+        } else {
+            setVal(getVal() + num);
+        }
+        document.querySelectorAll('#accebtn, #accebtn2').forEach(btn => btn.innerHTML = 'CE');
+    }
+
+    function ACCEbutton(){
+        let btn = document.querySelector('#accebtn, #accebtn2');
+        if(btn && btn.innerHTML == 'AC'){
+            curValue = 0;
+            operator = '';
+            setVal(0);
+        } else {
+            setVal(0);
+            document.querySelectorAll('#accebtn, #accebtn2').forEach(b => b.innerHTML = 'AC');
+        }
+    }
+
+    function PiButton(){
+        setVal(Math.PI);
+    }
+    function perButton(){
+        setVal(parseFloat(getVal()) / 100);
+    }
+    function sqrtButton(){
+        setVal(Math.sqrt(parseFloat(getVal())));
+    }
+    function plmaButton(){
+        setVal(parseFloat(getVal()) * -1);
+    }
+    function r2Button(){
+        setVal(parseFloat(getVal()).toFixed(2));
+    }
+    function r0Button(){
+        setVal(Math.round(parseFloat(getVal())));
+    }
+    function dotButton(){
+        if(!getVal().includes('.')){
+            setVal(getVal() + '.');
+        }
+    }
+    function plusButton(){
+        curValue = parseFloat(getVal());
+        setVal(0);
+        operator = '+';
+    }
+    function minusButton(){
+        curValue = parseFloat(getVal());
+        setVal(0);
+        operator = '-';
+    }
+    function divideButton(){
+        curValue = parseFloat(getVal());
+        setVal(0);
+        operator = '/';
+    }
+    function multiButton(){
+        curValue = parseFloat(getVal());
+        setVal(0);
+        operator = '*';
+    }
+    function powButton(){
+        curValue = parseFloat(getVal());
+        setVal(0);
+        operator = 'pow';
+    }
+    function equalButton(){
+        if(operator == '+'){
+            curValue += parseFloat(getVal());
+        } else if(operator == '-'){
+            curValue -= parseFloat(getVal());
+        } else if(operator == '/'){
+            curValue /= parseFloat(getVal());
+        } else if(operator == 'pow'){
+            curValue = Math.pow(curValue, parseFloat(getVal()));
+        } else if(operator == '*'){
+            curValue *= parseFloat(getVal());
+        }
+        setVal(curValue);
+    }
+
+    function backspaceButton(){
+        let val = getVal();
+        if(val.length <= 1 || (val.length == 2 && val[0] == '-')){
+            setVal('0');
+        } else {
+            setVal(val.slice(0, -1));
+        }
+    }
+    function squareButton(){
+        setVal(parseFloat(getVal()) ** 2);
+    }
+    function reciprocalButton(){
+        let val = parseFloat(getVal());
+        setVal(val !== 0 ? 1 / val : 'Error');
+    }
+    function logButton(){
+        let val = parseFloat(getVal());
+        setVal(val > 0 ? Math.log10(val) : 'Error');
+    }
+
+    document.getElementById('btn-bs').addEventListener('click', backspaceButton);
+    document.getElementById('btn-sq').addEventListener('click', squareButton);
+    document.getElementById('btn-rc').addEventListener('click', reciprocalButton);
+    document.getElementById('btn-log').addEventListener('click', logButton);
+    document.getElementById('btn-bs2').addEventListener('click', backspaceButton);
+    document.getElementById('btn-sq2').addEventListener('click', squareButton);
+    document.getElementById('btn-rc2').addEventListener('click', reciprocalButton);
+    document.getElementById('btn-log2').addEventListener('click', logButton);
+</script>
+</body>
+</html>
